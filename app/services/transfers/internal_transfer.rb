@@ -1,7 +1,5 @@
 module Transfers
   class InternalTransfer
-    attr_reader :sender, :receiver, :amount
-
     def initialize(sender, receiver_id, amount)
       @sender = sender
       @receiver_id = receiver_id

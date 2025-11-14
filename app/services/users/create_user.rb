@@ -1,7 +1,5 @@
 module Users
   class CreateUser
-    attr_reader :user, :token
-
     def initialize(params)
       @params = params
     end
