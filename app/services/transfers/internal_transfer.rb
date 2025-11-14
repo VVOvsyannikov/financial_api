@@ -7,12 +7,12 @@ module Transfers
     end
 
     def call
-      @receiver = User.find(@receiver_id)
+      receiver = User.find(@receiver_id)
 
       raise "Amount must be positive" if @amount <= 0
-      raise "Cannot transfer to self" if @sender.id == @receiver.id
+      raise "Cannot transfer to self" if @sender.id == receiver.id
 
-      first, second = [ @sender, @receiver ].sort_by(&:id)
+      first, second = [ @sender, receiver ].sort_by(&:id)
 
       ActiveRecord::Base.transaction do
         first.lock!
