@@ -1,0 +1,40 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes: &app-volumes
+      - .:/financial_api
+      - ~/.ssh:/root/.ssh
+      - ~/.bash_history:/root/.bash_history
+      - &bundle-cache-volume bundle_cache:/bundle_cache
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+    environment: &app-environment
+      DATABASE_HOST: db
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      BUNDLE_PATH: /bundle_cache
+      GEM_HOME: /bundle_cache
+      GEM_PATH: /bundle_cache
+      RAILS_PORT: 3000
+      RUBYOPT: -W:no-deprecated -W:no-experimental
+    command: bundle exec rails s -b '0.0.0.0' -p 3000
+    env_file:
+      - .env
+
+  db:
+    image: postgres:12-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  bundle_cache:
+  pg_data:
