@@ -1,6 +1,8 @@
 module Api
   module V1
     class UsersController < ApplicationController
+      include UsersParams
+
       skip_before_action :authorize_request, only: [ :create ]
 
       def create
@@ -20,16 +22,6 @@ module Api
       def withdraw
         Users::Withdraw.(user: @current_user, amount: amount_param)
         render_success(data: @current_user, serializer: UserSerializer)
-      end
-
-      private
-
-      def user_params
-        params.permit(:email)
-      end
-
-      def amount_param
-        params.require(:amount).to_d
       end
     end
   end
