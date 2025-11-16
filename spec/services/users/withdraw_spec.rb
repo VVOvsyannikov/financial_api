@@ -1,19 +1,32 @@
 require 'rails_helper'
 
 RSpec.describe Users::Withdraw do
+  subject { described_class.(user, amount) }
+
   let(:user) { create(:user, balance: 50) }
 
-  it "decreases balance correctly" do
-    result = Users::Withdraw.new(user, 30).call
-    expect(result).to eq(20)
-    expect(user.reload.balance).to eq(20)
+  context "when amount is positive and <= balance" do
+    let(:amount) { 30 }
+
+    it "decreases balance correctly" do
+      expect(subject).to eq(20)
+      expect(user.reload.balance).to eq(20)
+    end
   end
 
-  it "raises error if amount is negative" do
-    expect { Users::Withdraw.new(user, -10).call }.to raise_error("Amount must be positive")
+  context "when amount is negative" do
+    let(:amount) { -10 }
+
+    it "raises ValidationError" do
+      expect { subject }.to raise_error(ValidationError, /Amount must be positive/)
+    end
   end
 
-  it "raises error if insufficient balance" do
-    expect { Users::Withdraw.new(user, 100).call }.to raise_error("Insufficient balance")
+  context "when amount exceeds balance" do
+    let(:amount) { 100 }
+
+    it "raises NotEnoughFundsError" do
+      expect { subject }.to raise_error(NotEnoughFundsError)
+    end
   end
 end

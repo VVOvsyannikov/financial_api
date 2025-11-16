@@ -1,15 +1,24 @@
 require 'rails_helper'
 
 RSpec.describe Users::Deposit do
+  subject { described_class.(user, amount) }
+
   let(:user) { create(:user, balance: 0) }
 
-  it "increases balance correctly" do
-    result = Users::Deposit.new(user, 100).call
-    expect(result).to eq(100)
-    expect(user.reload.balance).to eq(100)
+  context "when amount is positive" do
+    let(:amount) { 100 }
+
+    it "increases balance correctly" do
+      expect(subject).to eq(100)
+      expect(user.reload.balance).to eq(100)
+    end
   end
 
-  it "raises error for negative amount" do
-    expect { Users::Deposit.new(user, -10).call }.to raise_error("Amount must be positive")
+  context "when amount is negative" do
+    let(:amount) { -10 }
+
+    it "raises ValidationError" do
+      expect { subject }.to raise_error(ValidationError, /Amount must be positive/)
+    end
   end
 end

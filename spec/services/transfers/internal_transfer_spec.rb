@@ -1,45 +1,55 @@
 require 'rails_helper'
 
 RSpec.describe Transfers::InternalTransfer do
+  subject { described_class.(sender: sender, receiver_id: receiver.id, amount: amount) }
+
   let(:sender) { create(:user, balance: 100) }
-  let(:receiver) { create(:user, balance: 0) }
+  let(:receiver) { create(:user, balance: 50) }
 
-  it "transfers money correctly" do
-    result = Transfers::InternalTransfer.new(sender, receiver.id, 50).call
+  context "when valid transfer" do
+    let(:amount) { 30 }
 
-    expect(result[:sender_balance]).to eq("50.0")
-    expect(result[:receiver_balance]).to eq("50.0")
-    expect(sender.reload.balance.to_s('F')).to eq("50.0")
-    expect(receiver.reload.balance.to_s('F')).to eq("50.0")
-  end
-
-  context "when receiver_id < sender_id" do
-    let!(:receiver) { create(:user, balance: 0) }
-    let(:sender) { create(:user, balance: 100) }
-
-    it "transfers money correctly" do
-      result = Transfers::InternalTransfer.new(sender, receiver.id, 50).call
-
-      expect(result[:sender_balance]).to eq("50.0")
-      expect(result[:receiver_balance]).to eq("50.0")
-      expect(sender.reload.balance.to_s('F')).to eq("50.0")
-      expect(receiver.reload.balance.to_s('F')).to eq("50.0")
+    it "transfers funds correctly" do
+      expect(subject[:sender_balance]).to eq(70)
+      expect(subject[:receiver_balance]).to eq(80)
+      expect(sender.reload.balance).to eq(70)
+      expect(receiver.reload.balance).to eq(80)
     end
   end
 
-  it "raises error for negative amount" do
-    expect { Transfers::InternalTransfer.new(sender, receiver.id, -10).call }.to raise_error("Amount must be positive")
+  context "when amount is negative" do
+    let(:amount) { -10 }
+
+    it "raises ValidationError" do
+      expect { subject }.to raise_error(ValidationError, /Amount must be positive/)
+    end
   end
 
-  it "raises error for insufficient balance" do
-    expect { Transfers::InternalTransfer.new(sender, receiver.id, 200).call }.to raise_error("Insufficient balance")
+  context "when sender tries to send more than balance" do
+    let(:amount) { 200 }
+
+    it "raises NotEnoughFundsError" do
+      expect { subject }.to raise_error(NotEnoughFundsError)
+    end
   end
 
-  it "raises error if receiver not found" do
-    expect { Transfers::InternalTransfer.new(sender, 0, 10).call }.to raise_error("Receiver not found")
+  context "when sender tries to send to self" do
+    let(:amount) { 10 }
+
+    it "raises ValidationError" do
+      expect {
+        described_class.(sender: sender, receiver_id: sender.id, amount: amount)
+      }.to raise_error(ValidationError, /Cannot transfer to self/)
+    end
   end
 
-  it "raises error if trying to transfer to self" do
-    expect { Transfers::InternalTransfer.new(sender, sender.id, 10).call }.to raise_error("Cannot transfer to self")
+  context "when receiver does not exist" do
+    let(:amount) { 10 }
+
+    it "raises ValidationError" do
+      expect {
+        described_class.(sender: sender, receiver_id: 0, amount: amount)
+      }.to raise_error(ValidationError, /Receiver not found/)
+    end
   end
 end

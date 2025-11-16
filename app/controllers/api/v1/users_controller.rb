@@ -4,10 +4,8 @@ module Api
       skip_before_action :authorize_request, only: [ :create ]
 
       def create
-        data = Users::CreateUser.new(user_params).call
+        data = Users::CreateUser.(user_params)
         render_success(data:, status: :created)
-      rescue StandardError => e
-        render_error(e.message, :unprocessable_entity)
       end
 
       def balance
@@ -15,17 +13,13 @@ module Api
       end
 
       def deposit
-        balance = Users::Deposit.new(@current_user, amount_param).call.to_s("F")
-        render_success(data: { user: { id: @current_user.id, balance: } })
-      rescue StandardError => e
-        render_error(e.message)
+        new_balance = Users::Deposit.(@current_user, amount_param)
+        render_success(data: { user: { id: @current_user.id, balance: new_balance } })
       end
 
       def withdraw
-        result = Users::Withdraw.new(@current_user, amount_param).call
-        render_success(data: { user: { id: @current_user.id, balance: result } })
-      rescue StandardError => e
-        render_error(e.message)
+        new_balance = Users::Withdraw.(@current_user, amount_param)
+        render_success(data: { user: { id: @current_user.id, balance: new_balance } })
       end
 
       private

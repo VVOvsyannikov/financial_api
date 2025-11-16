@@ -4,15 +4,13 @@ module Api
       before_action :authorize_request
 
       def create
-        data = Transfers::InternalTransfer.new(
-          @current_user,
-          transfer_params[:receiver_id],
-          transfer_params[:amount]
-        ).call
+        data = Transfers::InternalTransfer.(
+          sender: @current_user,
+          receiver_id: transfer_params[:receiver_id],
+          amount: transfer_params[:amount]
+        )
 
         render_success(data:)
-      rescue StandardError => e
-        render_error([ e.message ])
       end
 
       private
