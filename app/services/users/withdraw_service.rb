@@ -1,11 +1,5 @@
 module Users
-  class Withdraw
-    class << self
-      def call(user:, amount:)
-        new(user:, amount:).call
-      end
-    end
-
+  class WithdrawService < ApplicationService
     def initialize(user:, amount:)
       @user = user
       @amount = amount.to_d

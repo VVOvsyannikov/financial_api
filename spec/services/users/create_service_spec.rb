@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Users::CreateUser do
+RSpec.describe Users::CreateService do
   subject { described_class.(user_params: { email: email }) }
 
   context "when valid params" do

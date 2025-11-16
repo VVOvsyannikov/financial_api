@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Users::Deposit do
+RSpec.describe Users::DepositService do
   subject { described_class.(user:, amount:) }
 
   let(:user) { create(:user, balance: 0) }

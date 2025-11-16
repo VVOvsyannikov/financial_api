@@ -1,11 +1,5 @@
 module Users
-  class CreateUser
-    class << self
-      def call(user_params:)
-        new(user_params:).call
-      end
-    end
-
+  class CreateService < ApplicationService
     def initialize(user_params:)
       @user_params = user_params
     end

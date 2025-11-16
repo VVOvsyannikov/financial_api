@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Transfers::InternalTransfer do
+RSpec.describe Transfers::InternalTransferService do
   subject { described_class.(sender: sender, receiver_email: receiver.email, amount: amount) }
 
   let!(:sender) { create(:user, balance: 100) }
