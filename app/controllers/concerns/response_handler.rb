@@ -16,17 +16,10 @@ module ResponseHandler
 
   def render_success(data:, status: :ok, serializer: nil, params: {})
     if serializer
-      hash = serializer.new(data, params: params).serializable_hash
-
-      if hash[:data].is_a?(Array)
-        serialized = hash[:data].map { |d| d[:attributes] }
-      else
-        serialized = hash[:data]&.[](:attributes)
-      end
-
-      render json: { user: serialized }.compact, status: status
+      serialized = serializer.new(data, params:).serializable_hash[:data]&.[](:attributes)
+      render json: { user: serialized }.compact, status:
     else
-      render json: data, status: status
+      render json: data, status:
     end
   end
 
