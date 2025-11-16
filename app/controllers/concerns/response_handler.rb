@@ -14,9 +14,17 @@ module ResponseHandler
     render json: { error: "Not found" }, status: :not_found
   end
 
-  def render_success(data:, status: :ok, serializer: nil)
+  def render_success(data:, status: :ok, serializer: nil, params: {})
     if serializer
-      render json: data, serializer: serializer, status: status
+      hash = serializer.new(data, params: params).serializable_hash
+
+      if hash[:data].is_a?(Array)
+        serialized = hash[:data].map { |d| d[:attributes] }
+      else
+        serialized = hash[:data]&.[](:attributes)
+      end
+
+      render json: { user: serialized }.compact, status: status
     else
       render json: data, status: status
     end

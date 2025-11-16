@@ -1,11 +1,5 @@
 module Transfers
-  class InternalTransfer
-    class << self
-      def call(sender:, receiver_email:, amount:)
-        new(sender:, receiver_email:, amount:).call
-      end
-    end
-
+  class InternalTransferService < ApplicationService
     def initialize(sender:, receiver_email:, amount:)
       @sender = sender
       @receiver_email = receiver_email

@@ -1,11 +1,5 @@
 module Users
-  class Deposit
-    class << self
-      def call(user:, amount:)
-        new(user:, amount:).call
-      end
-    end
-
+  class DepositService < ApplicationService
     def initialize(user:, amount:)
       @user = user
       @amount = amount.to_d

@@ -19,25 +19,14 @@ RSpec.describe 'Users API', type: :request do
       response '201', 'user created' do
         let(:user) { { email: 'test@example.com' } }
 
-        examples 'application/json' => {
-          user: {
-            email: 'test@example.com',
-            balance: 0,
-            token: 'jwt.token.here'
-          }
-        }
-
+        include_examples 'user_created_example'
         run_test!
       end
 
       response '422', 'invalid request' do
         let(:user) { { email: 'invalid' } }
 
-        examples 'application/json' => {
-          error: 'Validation failed',
-          details: [ "Email is invalid" ]
-        }
-
+        include_examples 'validation_error_example'
         run_test!
       end
     end
@@ -52,23 +41,14 @@ RSpec.describe 'Users API', type: :request do
       response '200', 'balance info' do
         let(:Authorization) { "Bearer #{token}" }
 
-        examples 'application/json' => {
-          user: {
-            email: 'test@example.com',
-            balance: 100.0
-          }
-        }
-
+        include_examples 'user_info_example'
         run_test!
       end
 
       response '401', 'unauthorized' do
         let(:Authorization) { nil }
 
-        examples 'application/json' => {
-          error: 'Not authorized'
-        }
-
+        include_examples 'unauthorized_error_example'
         run_test!
       end
     end
@@ -94,13 +74,7 @@ RSpec.describe 'Users API', type: :request do
         let(:Authorization) { "Bearer #{token}" }
         let(:deposit) { { amount: 1000 } }
 
-        examples 'application/json' => {
-          user: {
-            email: 'test@example.com',
-            balance: 1100.0
-          }
-        }
-
+        include_examples 'user_info_example'
         run_test!
       end
 
@@ -108,10 +82,7 @@ RSpec.describe 'Users API', type: :request do
         let(:Authorization) { nil }
         let(:deposit) { { amount: 1000 } }
 
-        examples 'application/json' => {
-          error: 'Not authorized'
-        }
-
+        include_examples 'unauthorized_error_example'
         run_test!
       end
     end
@@ -136,13 +107,7 @@ RSpec.describe 'Users API', type: :request do
         let(:Authorization) { "Bearer #{token}" }
         let(:withdraw) { { amount: 20 } }
 
-        examples 'application/json' => {
-          user: {
-            email: 'test@example.com',
-            balance: 120.0
-          }
-        }
-
+        include_examples 'user_info_example'
         run_test!
       end
 
@@ -150,10 +115,7 @@ RSpec.describe 'Users API', type: :request do
         let(:Authorization) { nil }
         let(:withdraw) { { amount: 1000 } }
 
-        examples 'application/json' => {
-          error: 'Not authorized'
-        }
-
+        include_examples 'unauthorized_error_example'
         run_test!
       end
 
@@ -161,11 +123,7 @@ RSpec.describe 'Users API', type: :request do
         let(:Authorization) { "Bearer #{token}" }
         let(:withdraw) { { amount: 500 } }
 
-        examples 'application/json' => {
-          error: "Insufficient balance",
-          details: nil
-        }
-
+        include_examples 'insufficient_funds_example'
         run_test!
       end
     end

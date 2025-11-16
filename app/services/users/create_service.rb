@@ -1,11 +1,5 @@
 module Users
-  class CreateUser
-    class << self
-      def call(user_params:)
-        new(user_params:).call
-      end
-    end
-
+  class CreateService < ApplicationService
     def initialize(user_params:)
       @user_params = user_params
     end
@@ -17,8 +11,7 @@ module Users
         raise ValidationError.new("Validation failed", details: user.errors.full_messages)
       end
 
-      token = JsonWebToken.encode(user_id: user.id)
-      CreatedUser.new(user:, token:)
+      [ user, JsonWebToken.encode(user_id: user.id) ]
     end
   end
 end
