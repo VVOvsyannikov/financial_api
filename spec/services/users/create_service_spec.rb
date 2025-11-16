@@ -7,9 +7,9 @@ RSpec.describe Users::CreateService do
     let(:email) { "test@example.com" }
 
     it "creates a user and returns user + token" do
-      expect(subject.user).to be_a(User)
-      expect(subject.user.email).to eq(email)
-      expect(subject.token).to be_present
+      expect(subject.first).to be_a(User)
+      expect(subject.first.email).to eq(email)
+      expect(subject.last).to be_a(String)
     end
 
     it "persists the user" do

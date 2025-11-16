@@ -11,8 +11,7 @@ module Users
         raise ValidationError.new("Validation failed", details: user.errors.full_messages)
       end
 
-      token = JsonWebToken.encode(user_id: user.id)
-      CreatedUser.new(user:, token:)
+      [user, JsonWebToken.encode(user_id: user.id)]
     end
   end
 end

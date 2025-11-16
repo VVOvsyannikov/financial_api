@@ -4,8 +4,8 @@ module Api
       skip_before_action :authorize_request, only: [ :create ]
 
       def create
-        data = Users::CreateService.call(user_params:)
-        render_success(data:, serializer: UserCreateSerializer, status: :created)
+        data, token = Users::CreateService.call(user_params:)
+        render_success(data:, status: :created, serializer: UserSerializer, params: { token: })
       end
 
       def balance
