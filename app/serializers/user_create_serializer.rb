@@ -6,7 +6,7 @@ class UserCreateSerializer < ActiveModel::Serializer
   end
 
   def balance
-    object.user.balance
+    object.user.balance.to_f
   end
 
   def token

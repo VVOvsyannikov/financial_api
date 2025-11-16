@@ -21,4 +21,8 @@ module ResponseHandler
       render json: data, status: status
     end
   end
+
+  def render_unauthorized(message = "Not authorized")
+    render json: { error: message }, status: :unauthorized
+  end
 end

@@ -14,6 +14,7 @@ group :development, :test do
   gem "bundler-audit", require: false
   gem "brakeman"
   gem "debug", require: "debug/prelude"
+  gem "rswag"
   gem "rubocop-rails-omakase", require: false
 end
 

@@ -4,13 +4,13 @@ module Api
       include TransferParams
 
       def create
-        data = Transfers::InternalTransfer.(
+        Transfers::InternalTransfer.(
           sender: @current_user,
           receiver_email: transfer_params[:receiver_email],
           amount: transfer_params[:amount]
         )
 
-        render_success(data:)
+        render_success(data: @current_user, serializer: UserSerializer)
       end
     end
   end

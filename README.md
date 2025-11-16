@@ -58,11 +58,10 @@ Sample Response:
 ```json
 {
   "user": {
-    "id": 1,
     "email": "user1@example.com",
-    "balance": "0.0"
-  },
-  "token": "JWT_TOKEN_HERE"
+    "balance": 0.0,
+    "token": "JWT_TOKEN_HERE"
+  }
 }
 ```
 
@@ -77,7 +76,7 @@ curl -X POST http://localhost:3000/api/v1/users \
 #### 3. Deposit to User #1
 
 ```bash
-curl -X POST http://localhost:3000/api/v1/users/1/deposit \
+curl -X POST http://localhost:3000/api/v1/users/deposit \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer JWT_TOKEN_HERE" \
   -d '{"amount": 1000}'
@@ -87,35 +86,16 @@ Sample Response:
 ```json
 {
   "user": {
-    "id": 1,
-    "balance": "1000.0"
+    "email": "user1@example.com",
+    "balance": 1000.0
   }
 }
 ```
-#### 4. Transfer Money from User #1 → User #2
+
+#### 4. Check Balance of User #1
 
 ```bash
-curl -X POST http://localhost:3000/api/v1/transfers \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer JWT_TOKEN_HERE" \
-  -d '{
-        "receiver_id": 2,
-        "amount": 250
-      }'
-```
-Sample Response:
-
-```json
-{
-  "sender_balance":"750.0",
-  "receiver_balance":"250.0"
-}
-```
-
-#### 5. Check Balance of User #2
-
-```bash
-curl -X GET http://localhost:3000/api/v1/users/2/balance \
+curl -X GET http://localhost:3000/api/v1/users/balance \
   -H "Authorization: Bearer JWT_TOKEN_HERE"
 ```
 Sample Response:
@@ -123,8 +103,48 @@ Sample Response:
 ```json
 {
   "user":{
-    "id":2,
-    "balance":"250.0"
+    "email": "user1@example.com",
+    "balance": 1000.0
   }
 }
 ```
+
+#### 5. Withdraw amount from User #1
+
+```bash
+curl -X POST http://localhost:3000/api/v1/users/withdraw \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer JWT_TOKEN_HERE" \
+  -d '{"amount": 500}'
+```
+Sample Response:
+
+```json
+{
+  "user":{
+    "email": "user1@example.com",
+    "balance": 500.0
+  }
+}
+```
+
+#### 6. Transfer Money from User #1 → User #2
+
+```bash
+curl -X POST http://localhost:3000/api/v1/transfers \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer JWT_TOKEN_HERE" \
+  -d '{
+        "receiver_email": "user2@example.com",
+        "amount": 250
+      }'
+```
+Sample Response:
+
+```json
+{
+  "sender_balance": 750.0,
+  "receiver_balance": 250.0
+}
+```
+

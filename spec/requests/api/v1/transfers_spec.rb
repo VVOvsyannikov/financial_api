@@ -17,8 +17,7 @@ RSpec.describe "API::V1::Transfers", type: :request do
 
       expect(response).to have_http_status(:ok)
       data = JSON.parse(response.body)
-      expect(data["sender_balance"]).to eq(50.0)
-      expect(data["receiver_balance"]).to eq(50.0)
+      expect(data.dig("user", "balance")).to eq(50.0)
     end
 
     it "fails if amount is negative" do

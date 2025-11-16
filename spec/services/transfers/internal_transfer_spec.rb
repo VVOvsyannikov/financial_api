@@ -3,17 +3,16 @@ require 'rails_helper'
 RSpec.describe Transfers::InternalTransfer do
   subject { described_class.(sender: sender, receiver_email: receiver.email, amount: amount) }
 
-  let(:sender) { create(:user, balance: 100) }
-  let(:receiver) { create(:user, balance: 50) }
+  let!(:sender) { create(:user, balance: 100) }
+  let!(:receiver) { create(:user, balance: 50) }
 
   context "when valid transfer" do
     let(:amount) { 30 }
 
     it "transfers funds correctly" do
-      expect(subject[:sender_balance]).to eq(70)
-      expect(subject[:receiver_balance]).to eq(80)
-      expect(sender.reload.balance).to eq(70)
-      expect(receiver.reload.balance).to eq(80)
+      subject
+      expect(sender.reload.balance.to_f).to eq(70)
+      expect(receiver.reload.balance.to_f).to eq(80)
     end
   end
 

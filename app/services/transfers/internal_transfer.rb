@@ -17,11 +17,6 @@ module Transfers
       receiver = load_receiver
       validate_not_self(receiver)
       transfer_funds(receiver)
-
-      {
-        sender_balance: @sender.balance.to_f,
-        receiver_balance: receiver.balance.to_f
-      }
     end
 
     private
