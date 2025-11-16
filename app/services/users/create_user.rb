@@ -18,7 +18,7 @@ module Users
       end
 
       token = JsonWebToken.encode(user_id: user.id)
-      { user:, token: }
+      CreatedUser.new(user:, token:)
     end
   end
 end

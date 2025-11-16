@@ -8,7 +8,7 @@ RSpec.describe "API::V1::Users", type: :request do
       post "/api/v1/users", params: { email: "test@example.com" }
 
       expect(response).to have_http_status(:created)
-      expect(JSON.parse(response.body)).to include("token")
+      expect(JSON.parse(response.body)["user"]).to include("token")
     end
   end
 

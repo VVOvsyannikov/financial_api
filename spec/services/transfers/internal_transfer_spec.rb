@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Transfers::InternalTransfer do
-  subject { described_class.(sender: sender, receiver_id: receiver.id, amount: amount) }
+  subject { described_class.(sender: sender, receiver_email: receiver.email, amount: amount) }
 
   let(:sender) { create(:user, balance: 100) }
   let(:receiver) { create(:user, balance: 50) }
@@ -38,7 +38,7 @@ RSpec.describe Transfers::InternalTransfer do
 
     it "raises ValidationError" do
       expect {
-        described_class.(sender: sender, receiver_id: sender.id, amount: amount)
+        described_class.(sender: sender, receiver_email: sender.email, amount: amount)
       }.to raise_error(ValidationError, /Cannot transfer to self/)
     end
   end
@@ -48,7 +48,7 @@ RSpec.describe Transfers::InternalTransfer do
 
     it "raises ValidationError" do
       expect {
-        described_class.(sender: sender, receiver_id: 0, amount: amount)
+        described_class.(sender: sender, receiver_email: 0, amount: amount)
       }.to raise_error(ValidationError, /Receiver not found/)
     end
   end

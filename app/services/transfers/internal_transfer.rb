@@ -1,14 +1,14 @@
 module Transfers
   class InternalTransfer
     class << self
-      def call(sender:, receiver_id:, amount:)
-        new(sender, receiver_id, amount).call
+      def call(sender:, receiver_email:, amount:)
+        new(sender:, receiver_email:, amount:).call
       end
     end
 
-    def initialize(sender, receiver_id, amount)
+    def initialize(sender:, receiver_email:, amount:)
       @sender = sender
-      @receiver_id = receiver_id
+      @receiver_email = receiver_email
       @amount = amount.to_d
     end
 
@@ -31,9 +31,10 @@ module Transfers
     end
 
     def load_receiver
-      User.find(@receiver_id)
-    rescue ActiveRecord::RecordNotFound
-      raise ValidationError, "Receiver not found"
+      receiver = User.find_by(email: @receiver_email)
+      raise ValidationError, "Receiver not found" unless receiver
+
+      receiver
     end
 
     def validate_not_self(receiver)

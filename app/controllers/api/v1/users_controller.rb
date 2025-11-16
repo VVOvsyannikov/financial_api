@@ -7,7 +7,7 @@ module Api
 
       def create
         data = Users::CreateUser.(user_params:)
-        render_success(data:, status: :created)
+        render_success(data:, serializer: UserCreateSerializer, status: :created)
       end
 
       def balance
