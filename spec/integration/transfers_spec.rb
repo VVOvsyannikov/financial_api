@@ -24,13 +24,7 @@ RSpec.describe 'Transfers API', type: :request do
         let(:Authorization) { "Bearer #{token}" }
         let(:transfer) { { receiver_email: receiver.email, amount: 100 } }
 
-        examples 'application/json' => {
-          user: {
-            email: 'test@example.com',
-            balance: 120.0
-          }
-        }
-
+        include_examples 'user_info_example'
         run_test!
       end
 
@@ -38,10 +32,7 @@ RSpec.describe 'Transfers API', type: :request do
         let(:Authorization) { nil }
         let(:transfer) { { receiver_email: receiver.email, amount: 100 } }
 
-        examples 'application/json' => {
-          error: 'Not authorized'
-        }
-
+        include_examples 'unauthorized_error_example'
         run_test!
       end
 
