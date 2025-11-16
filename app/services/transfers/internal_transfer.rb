@@ -20,11 +20,11 @@ module Transfers
 
         raise "Insufficient balance" if @sender.balance < @amount
 
-        first.update!(balance: first.balance - @amount)
-        second.update!(balance: second.balance + @amount)
+        @sender.update!(balance: @sender.balance - @amount)
+        receiver.update!(balance: receiver.balance + @amount)
       end
 
-      { sender_balance: first.balance.to_s("F"), receiver_balance: second.balance.to_s("F") }
+      { sender_balance: @sender.balance.to_s("F"), receiver_balance: receiver.balance.to_s("F") }
     rescue ActiveRecord::RecordNotFound => e
       raise "Receiver not found"
     end
