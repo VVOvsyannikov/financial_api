@@ -4,22 +4,22 @@ module Api
       skip_before_action :authorize_request, only: [ :create ]
 
       def create
-        data = Users::CreateUser.(user_params)
+        data = Users::CreateUser.(user_params:)
         render_success(data:, status: :created)
       end
 
       def balance
-        render_success(data: { user: { id: @current_user.id, balance: @current_user.balance } })
+        render_success(data: @current_user, serializer: UserSerializer)
       end
 
       def deposit
-        new_balance = Users::Deposit.(@current_user, amount_param)
-        render_success(data: { user: { id: @current_user.id, balance: new_balance } })
+        Users::Deposit.(user: @current_user, amount: amount_param)
+        render_success(data: @current_user, serializer: UserSerializer)
       end
 
       def withdraw
-        new_balance = Users::Withdraw.(@current_user, amount_param)
-        render_success(data: { user: { id: @current_user.id, balance: new_balance } })
+        Users::Withdraw.(user: @current_user, amount: amount_param)
+        render_success(data: @current_user, serializer: UserSerializer)
       end
 
       private

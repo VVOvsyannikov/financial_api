@@ -1,8 +1,6 @@
 module Api
   module V1
     class TransfersController < ApplicationController
-      before_action :authorize_request
-
       def create
         data = Transfers::InternalTransfer.(
           sender: @current_user,

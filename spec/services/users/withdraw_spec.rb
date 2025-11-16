@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Users::Withdraw do
-  subject { described_class.(user, amount) }
+  subject { described_class.(user:, amount:) }
 
   let(:user) { create(:user, balance: 50) }
 

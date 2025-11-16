@@ -14,7 +14,11 @@ module ResponseHandler
     render json: { error: "Not found" }, status: :not_found
   end
 
-  def render_success(data:, status: :ok)
-    render json: data, status:
+  def render_success(data:, status: :ok, serializer: nil)
+    if serializer
+      render json: data, serializer: serializer, status: status
+    else
+      render json: data, status: status
+    end
   end
 end

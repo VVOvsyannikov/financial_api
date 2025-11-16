@@ -6,6 +6,7 @@ gem "rails", "~> 8.0.1"
 gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 
+gem "active_model_serializers", "~> 0.10.15"
 gem "bootsnap", require: false
 gem "jwt"
 

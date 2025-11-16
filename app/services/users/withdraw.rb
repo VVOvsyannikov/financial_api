@@ -1,12 +1,12 @@
 module Users
   class Withdraw
     class << self
-      def call(user, amount)
-        new(user, amount).call
+      def call(user:, amount:)
+        new(user:, amount:).call
       end
     end
 
-    def initialize(user, amount)
+    def initialize(user:, amount:)
       @user = user
       @amount = amount.to_d
     end

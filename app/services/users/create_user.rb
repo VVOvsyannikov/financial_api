@@ -1,17 +1,17 @@
 module Users
   class CreateUser
     class << self
-      def call(params)
-        new(params).call
+      def call(user_params:)
+        new(user_params:).call
       end
     end
 
-    def initialize(params)
-      @params = params
+    def initialize(user_params:)
+      @user_params = user_params
     end
 
     def call
-      user = User.new(@params)
+      user = User.new(@user_params)
 
       unless user.save
         raise ValidationError.new("Validation failed", details: user.errors.full_messages)
