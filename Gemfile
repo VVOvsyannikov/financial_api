@@ -7,10 +7,11 @@ gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 
 gem "bootsnap", require: false
-gem "brakeman"
 gem "jwt"
 
 group :development, :test do
+  gem "bundler-audit", require: false
+  gem "brakeman"
   gem "debug", require: "debug/prelude"
   gem "rubocop-rails-omakase", require: false
 end
