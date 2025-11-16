@@ -14,7 +14,7 @@ user creation, balance deposit, money transfers, and balance retrieval.
 ### 1. Start the containers
 
 ```bash
-docker compose up --build
+docker compose up
 ```
 
 ### 2. Create and migrate the database
@@ -29,7 +29,13 @@ After startup, the API will be available at:
 http://localhost:3000
 ```
 
-### 3. Authorization Header
+### 3. API documentation
+
+```bash
+http://localhost:3000/api_docs
+```
+
+### 4. Authorization Header
 
 For deposit, withdraw, transfer, and balance requests, you must send:
 
@@ -43,9 +49,9 @@ Example:
 -H "Authorization: Bearer JWT_TOKEN_HERE"
 ```
 
-### 4. Example CURL Requests
+### 5. Example CURL Requests
 
-#### 1. Create User #1
+#### 1. Create User
 
 ```bash
 curl -X POST http://localhost:3000/api/v1/users \
@@ -53,78 +59,39 @@ curl -X POST http://localhost:3000/api/v1/users \
   -d '{"email": "user1@example.com"}'
 ```
 
-Sample Response:
-
-```json
-{
-  "user": {
-    "id": 1,
-    "email": "user1@example.com",
-    "balance": "0.0"
-  },
-  "token": "JWT_TOKEN_HERE"
-}
-```
-
-#### 2. Create User #2
+#### 2. Deposit to User
 
 ```bash
-curl -X POST http://localhost:3000/api/v1/users \
-  -H "Content-Type: application/json" \
-  -d '{"email": "user2@example.com"}'
-```
-
-#### 3. Deposit to User #1
-
-```bash
-curl -X POST http://localhost:3000/api/v1/users/1/deposit \
+curl -X POST http://localhost:3000/api/v1/users/deposit \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer JWT_TOKEN_HERE" \
   -d '{"amount": 1000}'
 ```
-Sample Response:
 
-```json
-{
-  "user": {
-    "id": 1,
-    "balance": "1000.0"
-  }
-}
+#### 3. Check User Balance 
+
+```bash
+curl -X GET http://localhost:3000/api/v1/users/balance \
+  -H "Authorization: Bearer JWT_TOKEN_HERE"
 ```
-#### 4. Transfer Money from User #1 → User #2
+
+#### 4. Withdraw an amount from a User
+
+```bash
+curl -X POST http://localhost:3000/api/v1/users/withdraw \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer JWT_TOKEN_HERE" \
+  -d '{"amount": 500}'
+```
+
+#### 5. Transfer Money to other User
 
 ```bash
 curl -X POST http://localhost:3000/api/v1/transfers \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer JWT_TOKEN_HERE" \
   -d '{
-        "receiver_id": 2,
+        "receiver_email": "user2@example.com",
         "amount": 250
       }'
-```
-Sample Response:
-
-```json
-{
-  "sender_balance":"750.0",
-  "receiver_balance":"250.0"
-}
-```
-
-#### 5. Check Balance of User #2
-
-```bash
-curl -X GET http://localhost:3000/api/v1/users/2/balance \
-  -H "Authorization: Bearer JWT_TOKEN_HERE"
-```
-Sample Response:
-
-```json
-{
-  "user":{
-    "id":2,
-    "balance":"250.0"
-  }
-}
 ```

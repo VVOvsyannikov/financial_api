@@ -1,0 +1,212 @@
+---
+openapi: 3.0.1
+info:
+  title: API V1
+  version: v1
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security: []
+paths:
+  "/api/v1/transfers":
+    post:
+      summary: Creates a transfer
+      tags:
+      - Transfers
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: transfer created
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    user:
+                      email: test@example.com
+                      balance: 120.0
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    error: Not authorized
+        '422':
+          description: invalid params
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    error: Receiver not found
+                    details:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                receiver_email:
+                  type: string
+                amount:
+                  type: number
+              required:
+              - receiver_email
+              - amount
+  "/api/v1/users":
+    post:
+      summary: Creates a user
+      tags:
+      - Users
+      parameters: []
+      responses:
+        '201':
+          description: user created
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    user:
+                      email: test@example.com
+                      balance: 0
+                      token: jwt.token.here
+        '422':
+          description: invalid request
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    error: Validation failed
+                    details:
+                    - Email is invalid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: test@example.com
+              required:
+              - email
+  "/api/v1/users/balance":
+    get:
+      summary: Returns user balance
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: balance info
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    user:
+                      email: test@example.com
+                      balance: 100.0
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    error: Not authorized
+  "/api/v1/users/deposit":
+    post:
+      summary: Deposit amount to user balance
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: balance updated
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    user:
+                      email: test@example.com
+                      balance: 1100.0
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    error: Not authorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  example: 1000
+              required:
+              - amount
+  "/api/v1/users/withdraw":
+    post:
+      summary: Withdraw amount from user balance
+      tags:
+      - Users
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '200':
+          description: balance updated
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    user:
+                      email: test@example.com
+                      balance: 120.0
+        '401':
+          description: unauthorized
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    error: Not authorized
+        '422':
+          description: invalid amount or insufficient funds
+          content:
+            application/json:
+              examples:
+                example_0:
+                  value:
+                    error: Insufficient balance
+                    details:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  example: 20.0
+              required:
+              - amount

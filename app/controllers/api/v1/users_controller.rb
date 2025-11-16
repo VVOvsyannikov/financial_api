@@ -1,41 +1,27 @@
 module Api
   module V1
     class UsersController < ApplicationController
+      include UsersParams
+
       skip_before_action :authorize_request, only: [ :create ]
 
       def create
-        data = Users::CreateUser.new(user_params).call
-        render_success(data:, status: :created)
-      rescue StandardError => e
-        render_error(e.message, :unprocessable_entity)
+        data = Users::CreateUser.(user_params:)
+        render_success(data:, serializer: UserCreateSerializer, status: :created)
       end
 
       def balance
-        render_success(data: { user: { id: @current_user.id, balance: @current_user.balance } })
+        render_success(data: @current_user, serializer: UserSerializer)
       end
 
       def deposit
-        balance = Users::Deposit.new(@current_user, amount_param).call.to_s("F")
-        render_success(data: { user: { id: @current_user.id, balance: } })
-      rescue StandardError => e
-        render_error(e.message)
+        Users::Deposit.(user: @current_user, amount: amount_param)
+        render_success(data: @current_user, serializer: UserSerializer)
       end
 
       def withdraw
-        result = Users::Withdraw.new(@current_user, amount_param).call
-        render_success(data: { user: { id: @current_user.id, balance: result } })
-      rescue StandardError => e
-        render_error(e.message)
-      end
-
-      private
-
-      def user_params
-        params.permit(:email)
-      end
-
-      def amount_param
-        params.require(:amount).to_d
+        Users::Withdraw.(user: @current_user, amount: amount_param)
+        render_success(data: @current_user, serializer: UserSerializer)
       end
     end
   end

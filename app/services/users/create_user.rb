@@ -1,15 +1,24 @@
 module Users
   class CreateUser
-    def initialize(params)
-      @params = params
+    class << self
+      def call(user_params:)
+        new(user_params:).call
+      end
+    end
+
+    def initialize(user_params:)
+      @user_params = user_params
     end
 
     def call
-      @user = User.new(@params)
-      raise StandardError, @user.errors.full_messages.join(", ") unless @user.save
+      user = User.new(@user_params)
 
-      @token = JsonWebToken.encode(user_id: @user.id)
-      { user: @user, token: @token }
+      unless user.save
+        raise ValidationError.new("Validation failed", details: user.errors.full_messages)
+      end
+
+      token = JsonWebToken.encode(user_id: user.id)
+      CreatedUser.new(user:, token:)
     end
   end
 end
